@@ -1,4 +1,4 @@
-from django.db.models import QuerySet
+from django.db.models import QuerySet,Sum
 
 
 class OrderQuerySet(QuerySet):
@@ -12,4 +12,4 @@ class OrderQuerySet(QuerySet):
         return self
 
     def submitted_in_date(self, date_value):
-        return self
+        return self.filter(date__date=date_value)
