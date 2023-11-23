@@ -8,4 +8,5 @@ class CustomerQuerySet(QuerySet):
             total_spending = Coalesce(Sum('order__total_price'), None))
 
     def annotate_with_order_count(self):
-         return self
+        """returns a queryset of counting the orders of a customer"""     
+        return self.annotate(order_count = Count('order'))
