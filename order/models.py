@@ -14,6 +14,10 @@ class Order(models.Model):
     def calculate_total_price(self):
         return 0
 
+    def pending(self):
+        self.status = OrderStatus.PENDING
+        self.save()
+
     def accept(self):
         self.status = OrderStatus.ACCEPTED
         self.save()
@@ -30,14 +34,13 @@ class Order(models.Model):
         self.status = OrderStatus.CANCELLED
         self.save()
 
-
 class OrderItem(models.Model):
-    order = models.ForeignKey('order.Order', on_delete=models.CASCADE)
+    order = models.ForeignKey('order.Order', on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey('product.Product', on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
     def __str__(self):
-        return f'{self.order.customer.user.username} - {self.product.name}'
+        return f"{self.order.customer.user.username} - {self.product.name}"
 
     def save(self, *args, **kwargs):
         """You can not modify this method"""
