@@ -3,7 +3,8 @@ from django.db.models import QuerySet,Sum
 
 class OrderQuerySet(QuerySet):
     def by_customer(self, customer):
-        return self
+        """Filtering orders by a specific customer"""
+        return self.filter(customer=customer)
 
     def total_price(self):
         return self
@@ -12,4 +13,5 @@ class OrderQuerySet(QuerySet):
         return self
 
     def submitted_in_date(self, date_value):
+        """Filter orders submitted on a specific date."""
         return self.filter(date__date=date_value)
