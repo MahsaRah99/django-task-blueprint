@@ -1,8 +1,7 @@
-from collections.abc import Iterable
 from django.db import models
 from order.enums import OrderStatus
 from order.querysets import OrderQuerySet
-
+from product.models import Product
 
 class Order(models.Model):
     customer = models.ForeignKey('user_management.Customer', on_delete=models.CASCADE)
@@ -12,10 +11,11 @@ class Order(models.Model):
     
     objects = OrderQuerySet.as_manager()
 
-    def calculate_total_price(self):
+    def calculate_total_price(self,product=None):
         total_price = sum(item.product.price * item.quantity
              for item in self.items.all()
         )
+        # total_price = total_price + product.price
         return round(total_price,2)
 
     def pending(self):
@@ -48,7 +48,8 @@ class OrderItem(models.Model):
         return f"{self.order.customer.user.username} - {self.product.name}"
 
     # def create(self, *args, **kwargs):
-    #     pass
+    #     print(self.product.id)
+    #     super().save(*args, **kwargs)
     
     def save(self, *args, **kwargs):
         """You can not modify this method"""
