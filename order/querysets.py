@@ -7,7 +7,8 @@ class OrderQuerySet(QuerySet):
         return self.filter(customer=customer)
 
     def total_price(self):
-        return self
+        """Calculate the total price of all orders in the queryset."""
+        return self.aggregate(total_price=Sum('total_price')).get('total_price')
 
     def total_price_by_customer(self, customer):
         return self
