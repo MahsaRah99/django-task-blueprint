@@ -7,5 +7,5 @@ class ProductQuerySet(QuerySet):
         return self.filter(stock__lt=10)
 
     def in_stock(self):
-        """returns a queryset of products that their stock is at least 10"""      
+        """returns a queryset of products that their stock is at least 10"""
         return self.filter(stock__gte=10)

@@ -3,20 +3,24 @@ from order.enums import OrderStatus
 from order.querysets import OrderQuerySet
 from product.models import Product
 
+
 class Order(models.Model):
-    customer = models.ForeignKey('user_management.Customer', on_delete=models.CASCADE)
+    customer = models.ForeignKey("user_management.Customer", on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, default=OrderStatus.PENDING, choices=OrderStatus.choices)
+    status = models.CharField(
+        max_length=20, default=OrderStatus.PENDING, choices=OrderStatus.choices
+    )
     total_price = models.FloatField(default=0)
-    
+
     objects = OrderQuerySet.as_manager()
 
-    def calculate_total_price(self,product=None):
-        total_price = sum(item.product.price * item.quantity
-             for item in self.items.all()
+    def calculate_total_price(self, product=None):
+        total_price = sum(
+            item.product.price * item.quantity for item in self.items.all()
         )
-        # total_price = total_price + product.price
-        return round(total_price,2)
+        if product:
+            total_price += product.price
+        return round(total_price, 2)
 
     def pending(self):
         self.status = OrderStatus.PENDING
@@ -40,8 +44,10 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey('order.Order', on_delete=models.CASCADE, related_name="items")
-    product = models.ForeignKey('product.Product', on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        "order.Order", on_delete=models.CASCADE, related_name="items"
+    )
+    product = models.ForeignKey("product.Product", on_delete=models.CASCADE)
     quantity = models.IntegerField()
 
     def __str__(self):
@@ -50,7 +56,7 @@ class OrderItem(models.Model):
     # def create(self, *args, **kwargs):
     #     print(self.product.id)
     #     super().save(*args, **kwargs)
-    
+
     def save(self, *args, **kwargs):
         """You can not modify this method"""
         self.order.total_price = self.order.calculate_total_price()

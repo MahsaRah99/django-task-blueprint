@@ -1,4 +1,4 @@
-from django.db.models import QuerySet,Sum
+from django.db.models import QuerySet, Sum
 
 
 class OrderQuerySet(QuerySet):
@@ -8,7 +8,7 @@ class OrderQuerySet(QuerySet):
 
     def total_price(self):
         """Calculate the total price of all orders in the queryset."""
-        return self.aggregate(total_price=Sum('total_price')).get('total_price')
+        return self.aggregate(total_price=Sum("total_price")).get("total_price")
 
     def total_price_by_customer(self, customer):
         """Calculate the total price of orders for a specific customer."""
